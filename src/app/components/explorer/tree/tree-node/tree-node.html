@@ -1,0 +1,6 @@
+<div (click)="toggle($event)">
+{{ node.name }}
+<tree-node-children *ngIf="isExpanded">
+    <tree-node *ngFor="let node of node.children" [node]="node"></tree-node>
+</tree-node-children>
+</div>
