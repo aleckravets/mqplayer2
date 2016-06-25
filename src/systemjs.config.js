@@ -3,14 +3,18 @@
   // map tells the System loader where to look for things
   var map = {
     'app': 'app',
-    'rxjs': 'lib/rxjs',
-    '@angular': 'lib/@angular'
+    'rxjs': 'node_modules/rxjs',
+    '@angular': 'node_modules/@angular',
+    'angular2-tree-component':    'node_modules/angular2-tree-component',
+    'lodash':                     'node_modules/lodash'
   };
 
   // packages tells the System loader how to load when no filename and/or no extension
   var packages = {
     'app': {main: 'main.js', defaultExtension: 'js'},
-    'rxjs': {defaultExtension: 'js'}
+    'rxjs': {defaultExtension: 'js'},
+    'angular2-tree-component'   : { main: 'dist/angular2-tree-component.js', defaultExtension: 'js' },
+    'lodash'                    : { main: 'lodash.js', defaultExtension: 'js' }
   };
 
   var packageNames = [

@@ -2,7 +2,7 @@
   "port": 8000,
   "files": [
     "build/**/*.{html,htm,css,js}",
-    "!build/lib/**"
+    "!build/node_modules/**"
   ],
   "server": {
     "baseDir": "build"

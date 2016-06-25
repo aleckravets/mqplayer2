@@ -5,7 +5,7 @@ var gnf = require('gulp-npm-files');
 var watch = require('gulp-watch');
 var debug = require('gulp-debug');
 var runSequence = require('run-sequence');
-var shell = require('gulp-shell')
+var shell = require('gulp-shell');
 
 var tsFiles = ['src/**/*.ts', 'typings/index.d.ts'];
 var rsFiles =['src/**/*', '!**/*.ts'];
@@ -44,7 +44,7 @@ gulp.task('rs:watch', function() {
 
 gulp.task('lib', function() {
   gulp.src(gnf(), { base: 'node_modules' })
-    .pipe(gulp.dest('build/lib'));
+    .pipe(gulp.dest('build/node_modules'));
 });
 
 gulp.task('watch', ['compile:watch', 'rs:watch']);
