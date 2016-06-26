@@ -11,7 +11,7 @@ export class TreeService {
         this.driveService = new DriveService();
     }
 
-    getChildNodes(node?: TreeNode) {
+    getChildNodes(node?: any) {
         return this.driveService.getItems(node ? node.item : null)
             .then(items => items.map(item => this.getNode(item)));
     }
