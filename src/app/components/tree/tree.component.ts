@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TreeService } from './tree.service';
 import { TreeNode } from './tree-node/tree-node';
-import { DriveItem } from 'app/services/drive/drive-item';
+import { DriveFile } from 'app/services/drive/drive-file';
 import { TreeNodeComponent } from './tree-node/tree-node.component';
 
 @Component({
@@ -9,21 +9,22 @@ import { TreeNodeComponent } from './tree-node/tree-node.component';
     moduleId: module.id,
     templateUrl: './tree.html',
     providers: [TreeService],
-    directives: [TreeNodeComponent]
+    directives: [TreeNodeComponent],
+    inputs: ['roots']
 })
 export class TreeComponent implements OnInit {
-    root: TreeNode;
+    roots: TreeNode[];
 
     constructor(private treeService: TreeService) {
     }
 
     ngOnInit() {
-        this.root = new TreeNode(new DriveItem());
-        this.root.name = 'Root';
+        // this.root = new TreeNode(new DriveFile());
+        // this.root.name = 'Root';
 
-        this.treeService.getChildNodes()
-            .then(nodes => {
-                this.root.children = nodes;
-            });
+        // this.treeService.getChildNodes()
+        //     .then(nodes => {
+        //         this.root.children = nodes;
+        //     });
     }
 }

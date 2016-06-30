@@ -19,13 +19,15 @@
             <div id="resize-bar-left" class="resize-bar" ng-mousedown="resizeBarMousedown($event)"></div>
             <div id="resize-bar-right" class="resize-bar" ng-mousedown="resizeBarMousedown($event)"></div>
             <div class="col-inner">
-                <playlist></playlist>
+                <button (click)="login()">Login</button>
+                {{ data | json }}
+                <!--<playlist></playlist>-->
             </div>
         </div>
     </div>
     <div id="left-col" class="col">
         <div class="col-inner">
-            <explorer></explorer>
+            <tree [roots]="rootNodes"></tree>
         </div>
     </div>
     <div id="right-col" class="col">

@@ -1,6 +1,6 @@
-import { DriveItem } from './drive-item';
+import { DriveFile } from './drive-file';
 
-export var ITEMS = [
+export var DRIVE_FILES = [
     { id: 1, name: 'One', type: 'folder', parent: null },
     { id: 2, name: 'Two', type: 'folder', parent: null },
     { id: 3, name: 'Three', type: 'folder', parent: null },

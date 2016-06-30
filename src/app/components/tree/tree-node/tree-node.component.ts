@@ -7,7 +7,7 @@ import { TreeService } from '../tree.service';
     selector: 'tree-node',
     moduleId: module.id,
     templateUrl: './tree-node.html',
-    inputs: ['node', 'isExpanded'],
+    inputs: ['node'],
     directives: [TreeNodeComponent, NgIf]
 })
 export class TreeNodeComponent {
@@ -25,8 +25,9 @@ export class TreeNodeComponent {
         this.isExpanded = !this.isExpanded;
 
         if (!this.node.children) {
+            this.isLoading = true;
             this.treeService.getChildNodes(this.node)
-                .then(nodes => this.node.children = nodes);
+                .then(() => this.isLoading = false);
         }
     }
 
