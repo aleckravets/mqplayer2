@@ -1,4 +1,5 @@
 import {Component} from "@angular/core";
+import {Record} from "./record";
 
 @Component({
     selector: "playlist",
@@ -6,6 +7,8 @@ import {Component} from "@angular/core";
     templateUrl: "playlist.html"
 })
 export class PlaylistComponent {
+    records: Record[];
+    
     constructor() {
     }
 }
