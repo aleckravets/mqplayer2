@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
 import {Record} from "./record";
+import {Playlist} from "./playlist";
 
 @Component({
     selector: "playlist",
@@ -7,8 +8,9 @@ import {Record} from "./record";
     templateUrl: "playlist.html"
 })
 export class PlaylistComponent {
-    records: Record[];
+    playlist: Playlist;
     
     constructor() {
+        this.playlist = new Playlist();
     }
 }

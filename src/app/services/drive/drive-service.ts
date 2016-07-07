@@ -25,7 +25,8 @@ export class DriveService {
 
         query = query + ' and trashed = false';
 
-        return this.query(query);
+        return this.query(query)
+            .then(files => parent.children = files);
     }
 
     authorize() {
@@ -73,7 +74,7 @@ export class DriveService {
 
         return deferred.promise
             .then(files => {
-                return files.map(file => this.getFile(file))
+                return files.map(file => this.convertFile(file))
                     .sort(this.fileComparator);
             });
     }
@@ -133,21 +134,16 @@ export class DriveService {
         return deferred.promise;
     }
 
-    private getFile(rawFile) {
-        return {
-            id: rawFile.id,
-            name: rawFile.name,
-            isFolder: rawFile.mimeType == 'application/vnd.google-apps.folder',
-            parent: null
-        }
+    private convertFile(rawFile) {
+        return new DriveFile(rawFile.id, rawFile.name, rawFile.mimeType == 'application/vnd.google-apps.folder');
     }
 
     private fileComparator(a: DriveFile, b: DriveFile) {
-        if (a.isFolder === b.isFolder) {
+        if (a.isDir === b.isDir) {
             return a.name < b.name ? -1 : 1;
         }
         else {
-            return a.isFolder ? -1 : 1;
+            return a.isDir ? -1 : 1;
         }
     }
 }

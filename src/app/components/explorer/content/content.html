@@ -1,0 +1,5 @@
+<div *ngIf="dir">
+    <div *ngFor="let file of dir.children" class="row">
+        <div class="col-lg-6">{{ file.name }}</div>
+    </div>
+</div>

@@ -1,37 +1,45 @@
 <div class="navbar navbar-fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/"><i class="glyphicon glyphicon-headphones"></i><span>MQ Player</span></a>
-        <player></player>
-        <ul class="nav navbar-nav navbar-right">
-            <li class="accounts dropdown" ng-class="{open: isMenuWidgetOpen('accounts')}">
-                <a ng-click="toggleMenuWidget('accounts')"><i class="glyphicon glyphicon-cloud"></i> Accounts <span class="caret"></span></a>
-                <div ng-include="'partials/accounts.html'" ng-if="isMenuWidgetOpen('accounts')" include-replace></div>
-            </li>
-            <li><a href="#/help"><i class="glyphicon glyphicon-question-sign"></i> Help</a></li>
-            <li><a ng-click="logout()"><i class="glyphicon glyphicon-log-out"></i> Quit</a></li>
-        </ul>
-    </div>
-</div>
-
-<div id="content-wrapper">
-    <div id="content-col-wrapper">
-        <div id="content-col" class="col">
-            <div id="resize-bar-left" class="resize-bar" ng-mousedown="resizeBarMousedown($event)"></div>
-            <div id="resize-bar-right" class="resize-bar" ng-mousedown="resizeBarMousedown($event)"></div>
-            <div class="col-inner">
+        <div class="row">
+            <div class="col-lg-2">
+                <a class="navbar-brand" href="/">Drive Music Player</a>
+            </div>
+            <div class="col-lg-10">
                 <button (click)="login()">Login</button>
-                <playlist></playlist>
+                <player></player>
             </div>
         </div>
     </div>
-    <div id="left-col" class="col">
-        <div class="col-inner">
-            <tree [roots]="rootNodes"></tree>
-        </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <explorer></explorer>
     </div>
-    <div id="right-col" class="col">
-        <div class="col-inner">
-            <playlist-manager></playlist-manager>
-        </div>
+    <div class="col-lg-4">
+        <playlist></playlist>
     </div>
 </div>
+
+<!--<div id="content-wrapper">-->
+    <!--<div id="content-col-wrapper">-->
+        <!--<div id="content-col" class="col">-->
+            <!--<div id="resize-bar-left" class="resize-bar" ng-mousedown="resizeBarMousedown($event)"></div>-->
+            <!--<div id="resize-bar-right" class="resize-bar" ng-mousedown="resizeBarMousedown($event)"></div>-->
+            <!--<div class="col-inner">-->
+                <!--<playlist></playlist>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div id="left-col" class="col">-->
+        <!--<div class="col-inner">-->
+            <!--<button (click)="login()">Login</button>-->
+            <!--<tree [roots]="rootNodes"></tree>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div id="right-col" class="col">-->
+        <!--<div class="col-inner">-->
+            <!--<playlist-manager></playlist-manager>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->

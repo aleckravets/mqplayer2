@@ -6,6 +6,10 @@ interface Array<T> {
     rotate(n: number): T[];
 }
 
+interface Promise<T> {
+    finally(cb): Promise<T>;
+}
+
 Array.prototype.empty = function() {
     this.splice(0, this.length);
     return this;
@@ -51,4 +55,10 @@ Array.prototype.shuffle = function() {
 Array.prototype.rotate = function(n) {
     this.unshift(...this.splice(n, this.length));
     return this;
+};
+
+Promise.prototype.finally = function(cb) {
+    const res = () => this
+    const fin = () => Promise.resolve(cb()).then(res)
+    return this.then(fin, fin);
 };

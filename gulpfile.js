@@ -8,7 +8,7 @@ var runSequence = require('run-sequence');
 var shell = require('gulp-shell');
 
 var tsFiles = ['src/**/*.ts', 'typings/index.d.ts'];
-var rsFiles =['src/**/*', '!**/*.ts'];
+var rsFiles =['src/**/*', '!**/*.ts', '!**/*.*___jb_tmp___'];
 
 gulp.task('clean', function(cb) {
   return del(['build'], cb);

@@ -1,0 +1,17 @@
+<div [ngClass]="{folder: node.isDir, file: !node.isDir, selected: selected}" (click)="click($event)">
+    <span *ngIf="node.isDir" (click)="toggle()" class="folder-icons">
+        <i [ngClass]="{'glyphicon-minus': expanded}"
+           class="glyphicon glyphicon-plus"></i>
+        <i *ngIf="node.isDir"
+           [ngClass]="{'glyphicon-folder-open': expanded}"
+           class="glyphicon glyphicon-folder-close"></i>
+    </span>
+    <i *ngIf="!node.isDir" class="glyphicon glyphicon-file"></i>
+    <span (click)="select()" class="tree-node-label">
+        {{node.name}}
+    </span>
+    <div *ngIf="node.isDir && expanded && loading" class="loading">Loading...</div>
+    <div *ngIf="expanded" class="tree-node-children">
+        <tree-node *ngFor="let node of node.children" [node]="node"></tree-node>
+    </div>
+</div>
