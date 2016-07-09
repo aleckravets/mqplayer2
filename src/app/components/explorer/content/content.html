@@ -1,5 +1,5 @@
-<div *ngIf="dir">
-    <div *ngFor="let file of dir.children" class="row">
-        <div class="col-lg-6">{{ file.name }}</div>
+<div *ngIf="folder">
+    <div *ngFor="let file of folder.children" class="row">
+        <div class="col-lg-6" (dblclick)="showFolder(file)">{{ file.name }}</div>
     </div>
 </div>

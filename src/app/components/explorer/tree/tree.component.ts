@@ -1,43 +1,55 @@
-import {Component, OnInit, EventEmitter, Output} from '@angular/core';
-import { TreeService } from './tree.service';
-import { TreeNode } from './tree-node/tree-node';
-import { DriveFile } from 'app/services/drive/drive-file';
-import { TreeNodeComponent } from './tree-node/tree-node.component';
+import {Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
+import {TreeNodeComponent} from './tree-node/tree-node.component';
+import {ITreeNode} from "./tree-node/tree-node";
 
 @Component({
     selector: 'tree',
     moduleId: module.id,
     templateUrl: './tree.html',
     styleUrls: ['./tree.css'],
-    providers: [TreeService],
     directives: [TreeNodeComponent]
 })
 export class TreeComponent implements OnInit {
-    roots: TreeNode[];
+    @Input() roots: ITreeNode[];
+    @Input() options;
+    @Output() onSelectNode = new EventEmitter<TreeNodeComponent>();
+    @Output() onToggleNode = new EventEmitter<TreeNodeComponent>();
     selectedNode: TreeNodeComponent;
-    @Output() onSelectNode = new EventEmitter<TreeNode>();
+    private getChildren: Function;
 
-    constructor(private treeService: TreeService) {
+    constructor() {
     }
 
     ngOnInit() {
-        this.getRoots();
+        this.getChildren = this.options ? this.options.getChildren : undefined;
     }
     
     selectNode(node: TreeNodeComponent) {
         if (this.selectedNode) {
-            this.selectedNode.selected = false;
+            this.selectedNode.isSelected = false;
         }
+        node.isSelected = true;
         this.selectedNode = node;
-        this.onSelectNode.emit(node.node);
+        this.onSelectNode.emit(node);
     }
 
-    private getRoots() {
-        this.roots = [];
+    toggleNode(node: TreeNodeComponent) {
+        node.isExpanded = !node.isExpanded;
+        this.onToggleNode.emit(node);
 
-        let root = new TreeNode(new DriveFile('root', 'My Drive', true));
-        this.roots.push(root);
+        if (!node.model.children && this.getChildren) {
+            let res = this.getChildren(node.model);
 
-        // get playlists here...
+            if (res instanceof Promise) {
+                node.isLoading = true;
+                res.then(children => {
+                    node.model.children = children;
+                    node.isLoading = false;
+                });
+            }
+            else {
+                node.model.children = res;
+            }
+        }
     }
 }

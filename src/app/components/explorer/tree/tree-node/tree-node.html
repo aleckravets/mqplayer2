@@ -1,17 +1,20 @@
-<div [ngClass]="{folder: node.isDir, file: !node.isDir, selected: selected}" (click)="click($event)">
-    <span *ngIf="node.isDir" (click)="toggle()" class="folder-icons">
-        <i [ngClass]="{'glyphicon-minus': expanded}"
-           class="glyphicon glyphicon-plus"></i>
-        <i *ngIf="node.isDir"
-           [ngClass]="{'glyphicon-folder-open': expanded}"
-           class="glyphicon glyphicon-folder-close"></i>
+<div class="tree-node-{{model.type}}" [ngClass]="{selected: isSelected}" (click)="click($event)">
+    <span *ngIf="isExpandable()" (click)="toggle()">
+    <svg x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" focusable="false" fill="#000000">
+        <polygon points="8,5 13,10 8,15"></polygon>
+    </svg>
+        <!--<i [ngClass]="{'glyphicon-minus': isExpanded, hidden: model.isEmpty}"-->
+           <!--class="glyphicon glyphicon-plus"></i>-->
+        <!--<i *ngIf="model.hasChildren"-->
+           <!--[ngClass]="{'glyphicon-folder-open': isExpanded}"-->
+           <!--class="glyphicon glyphicon-folder-close"></i>-->
     </span>
-    <i *ngIf="!node.isDir" class="glyphicon glyphicon-file"></i>
+    <!--<i *ngIf="!isExpandable()" class="glyphicon glyphicon-file"></i>-->
     <span (click)="select()" class="tree-node-label">
-        {{node.name}}
+        {{model.name}}
     </span>
-    <div *ngIf="node.isDir && expanded && loading" class="loading">Loading...</div>
-    <div *ngIf="expanded" class="tree-node-children">
-        <tree-node *ngFor="let node of node.children" [node]="node"></tree-node>
+    <div *ngIf="isExpandable() && isExpanded && isLoading" class="loading">Loading...</div>
+    <div *ngIf="isExpanded" class="tree-node-children">
+        <tree-node *ngFor="let child of model.children" [model]="child"></tree-node>
     </div>
 </div>

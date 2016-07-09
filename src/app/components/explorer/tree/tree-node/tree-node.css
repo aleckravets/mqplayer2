@@ -3,6 +3,6 @@
     padding-left: 20px;
 }
 
-.selected .tree-node-label {
+.selected > .tree-node-label {
     font-weight: bold;
 }

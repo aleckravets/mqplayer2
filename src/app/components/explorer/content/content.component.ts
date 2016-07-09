@@ -10,18 +10,17 @@ import {NgIf} from "@angular/common";
     directives: [NgIf]
 })
 export class ContentComponent {
-    dir: DriveFile;
+    folder: DriveFile;
     loading: boolean;
     
     constructor(private driveService: DriveService) {
     }
 
-    showDir(dir: DriveFile) {
-        console.log(dir);
-        this.dir = dir;
-        if (!dir.children) {
+    showFolder(folder: DriveFile) {
+        this.folder = folder;
+        if (!folder.children) {
             this.loading = true;
-            this.driveService.getFiles(dir)
+            this.driveService.getFiles(folder)
                 .finally(() => this.loading = false);
         }
     }

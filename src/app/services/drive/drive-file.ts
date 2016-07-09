@@ -1,12 +1,14 @@
-export class DriveFile{
+export class DriveFile {
     id: string;
     name: string;
-    isDir: boolean;
+    isFolder: boolean;
+    hasSubfolders: boolean;
     children: DriveFile[];
 
-    constructor(id:string, name:string, isDir:boolean) {
+    constructor(id:string, name:string, isFolder:boolean, hasSubfolders = false) {
         this.id = id;
         this.name = name;
-        this.isDir = isDir;
+        this.isFolder = isFolder;
+        this.hasSubfolders = hasSubfolders;
     }
 }

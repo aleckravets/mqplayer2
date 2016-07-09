@@ -23,10 +23,46 @@ export class DriveService {
             query = `(sharedWithMe or ${query})`;
         }
 
-        query = query + ' and trashed = false';
-
         return this.query(query)
+            .then(files => this.checkSubfolders(files))
+            .then(files => {
+                return files.map(file => this.convertFile(file))
+                    .sort(this.fileComparator);
+            })
             .then(files => parent.children = files);
+    }
+
+    private checkSubfolders(files) {
+        var parents = {};
+
+        files.forEach(f => {
+            if (f.mimeType == 'application/vnd.google-apps.folder') {
+                parents[f.id] = f;
+            }
+        });
+
+        var parentIds = Object.keys(parents);
+
+        if (!parentIds.length) {
+            return files;
+        }
+
+        var query = parentIds
+            .map(id => `'${id}' in parents`)
+            .join(' or ');
+
+        query = `(${query}) and mimeType = 'application/vnd.google-apps.folder'`;
+
+        return this.query(query).then(subfolders => {
+            subfolders.forEach(f => {
+                f.parents.forEach(p => {
+                    if (parents[p]) {
+                        parents[p].hasSubfolders = true;
+                    }
+                })
+            });
+            return files;
+        });
     }
 
     authorize() {
@@ -68,20 +104,19 @@ export class DriveService {
     }
 
     private query(query) {
+        query = query + ' and trashed = false';
+
         var deferred = new Deferred();
 
         this.getPageOfFiles(query, [], deferred, null);
 
-        return deferred.promise
-            .then(files => {
-                return files.map(file => this.convertFile(file))
-                    .sort(this.fileComparator);
-            });
+        return deferred.promise;
     }
 
     private getPageOfFiles(query, result, deferred, pageToken) {
         var request = gapi.client.drive.files.list({
             q: query,
+            fields: 'nextPageToken, files(id, name, mimeType, parents)',
             pageToken: pageToken
         });
 
@@ -135,15 +170,15 @@ export class DriveService {
     }
 
     private convertFile(rawFile) {
-        return new DriveFile(rawFile.id, rawFile.name, rawFile.mimeType == 'application/vnd.google-apps.folder');
+        return new DriveFile(rawFile.id, rawFile.name, rawFile.mimeType == 'application/vnd.google-apps.folder', rawFile.hasSubfolders);
     }
 
     private fileComparator(a: DriveFile, b: DriveFile) {
-        if (a.isDir === b.isDir) {
+        if (a.isFolder === b.isFolder) {
             return a.name < b.name ? -1 : 1;
         }
         else {
-            return a.isDir ? -1 : 1;
+            return a.isFolder ? -1 : 1;
         }
     }
 }
