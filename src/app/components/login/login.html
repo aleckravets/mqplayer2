@@ -1,0 +1,2 @@
+<button (click)="login()" *ngIf="!driveService.isLoggedIn">Login</button>
+<button (click)="logout()" *ngIf="driveService.isLoggedIn">Logout</button>

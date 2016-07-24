@@ -1,0 +1,7 @@
+<div class="row">
+    <div class="col-lg-1">
+        <i *ngIf="file.isFolder" class="glyphicon glyphicon-folder-close"></i>
+        <i *ngIf="!file.isFolder" class="glyphicon glyphicon-file"></i>
+    </div>
+    <div class="col-lg-11">{{ file.name }}</div>
+</div>

@@ -1,35 +1,66 @@
 import { Injectable } from '@angular/core';
 import { DriveFile } from './drive-file';
-import { DRIVE_FILES } from './mock-files';
-import {Deferred} from "app/deferred";
+import {Deferred} from "../../tools/deferred";
 
+@Injectable()
 export class DriveService {
     CLIENT_ID = '97071318931-0pqadkdeov03b36bhthnri1n3h64eg7d.apps.googleusercontent.com';
     SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
-    authorized: boolean;
+    isLoggedIn: boolean;
     token: string;
     user: any;
 
     constructor() {
-        loadDriveAPI();
     }
 
-    getFiles(parent?: DriveFile): Promise<DriveFile[]> {
-        var parentId = parent ? parent.id : 'root';
+    getFile(id: string): Promise<DriveFile> {
+        var deferred = new Deferred();
 
-        var query = `'${parentId}' in parents`;
+        var request = gapi.client.drive.files.get({
+            'fileId': id
+        });
+
+        request.execute(resp => {
+            if (resp.error) {
+                var error = resp.error.code + " " + resp.error.message;
+                deferred.reject(error);
+                console.log(error);
+            }
+            else {
+                this.processFile(resp)
+                this.checkSubfolders([resp])
+                    .then(() => {
+                        deferred.resolve(resp);
+                    });
+            }
+        });
+
+        return deferred.promise;
+    }
+
+    getChildren(parent: DriveFile): Promise<DriveFile[]> {
+        var query = `'${parent.id}' in parents`;
 
         if (!parent) {
             query = `(sharedWithMe or ${query})`;
         }
 
         return this.query(query)
-            .then(files => this.checkSubfolders(files))
-            .then(files => {
-                return files.map(file => this.convertFile(file))
-                    .sort(this.fileComparator);
-            })
+            .then(files => this.processFiles(files))
             .then(files => parent.children = files);
+    }
+
+    private processFiles(files) {
+        return this.checkSubfolders(files)
+            .then(files => {
+                files.forEach(this.processFile);
+                files.sort(this.fileComparator);
+                return files;
+            });
+    }
+
+    private processFile(file) {
+        file.isFolder = file.mimeType == 'application/vnd.google-apps.folder';
     }
 
     private checkSubfolders(files) {
@@ -44,7 +75,7 @@ export class DriveService {
         var parentIds = Object.keys(parents);
 
         if (!parentIds.length) {
-            return files;
+            return Promise.resolve(files);
         }
 
         var query = parentIds
@@ -65,22 +96,30 @@ export class DriveService {
         });
     }
 
-    authorize() {
+    login(immediate = false) {
         return new Promise((resolve, reject) => {
-            gapi.auth.authorize({client_id: this.CLIENT_ID, scope: this.SCOPES.join(' '), immediate: false},
+            gapi.auth.authorize({
+                client_id: this.CLIENT_ID,
+                scope: this.SCOPES.join(' '),
+                immediate
+                },
                 resp => {
                     if (resp && !resp.error) {
-                        this.authorized = true;
+                        this.isLoggedIn = true;
                         this.token = gapi.auth.getToken().access_token;
                         resolve();
                     }
                     else {
-                        this.authorized = false;
+                        this.isLoggedIn = false;
                         reject(resp && resp.error);
                     }
                 });
-        })
+            })
             .then(() => this.getUserInfo());
+    }
+
+    logout() {
+
     }
 
     private getUserInfo() {
@@ -169,9 +208,9 @@ export class DriveService {
         return deferred.promise;
     }
 
-    private convertFile(rawFile) {
-        return new DriveFile(rawFile.id, rawFile.name, rawFile.mimeType == 'application/vnd.google-apps.folder', rawFile.hasSubfolders);
-    }
+    // private processFile(rawFile) {
+    //     return new DriveFile(rawFile.id, rawFile.name, rawFile.mimeType == 'application/vnd.google-apps.folder', rawFile.hasSubfolders);
+    // }
 
     private fileComparator(a: DriveFile, b: DriveFile) {
         if (a.isFolder === b.isFolder) {
@@ -183,7 +222,7 @@ export class DriveService {
     }
 }
 
-function loadDriveAPI() {
+export function loadDriveAPI() {
     return new Promise((resolve, reject) => {
         window.gapi_loaded = function() {
             gapi.client.load('drive', 'v3', function() {

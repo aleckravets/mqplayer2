@@ -1,12 +1,11 @@
 <div class="row">
     <div class="col-lg-5">
-        <tree *ngIf="app.isAuthorized"
-              [roots]="treeRoots"
+        <tree [roots]="treeRoots"
               [options]="getTreeOptions()"
               (onSelectNode)="onSelectNode($event)">
         </tree>
     </div>
     <div class="col-lg-7">
-        <content></content>
+        <router-outlet></router-outlet>
     </div>
 </div>

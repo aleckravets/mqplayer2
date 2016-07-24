@@ -1,29 +1,19 @@
 import {Component, OnInit} from "@angular/core";
-import {PlaylistComponent} from "./playlist/playlist.component"
-import {PlayerComponent} from "./player/player.component"
-import {DriveService} from "app/services/drive/drive-service";
-import {ExplorerComponent} from "./explorer/explorer.component";
+import {ROUTER_DIRECTIVES} from "@angular/router";
+import {DriveService} from "../services/drive/drive-service";
 
 @Component({
     selector: "app",
     moduleId: module.id,
     templateUrl: "./app.html",
-    directives: [ExplorerComponent, PlayerComponent, PlaylistComponent],
+    directives: [ROUTER_DIRECTIVES],
     providers: [DriveService]
 })
 export class AppComponent implements OnInit {
-    isAuthorized: boolean = false;
 
     constructor(private driveService: DriveService) {
     }
 
     ngOnInit() {
-    }
-
-    login() {
-        this.driveService.authorize()
-            .then(() => {
-                this.isAuthorized = true;
-            });
     }
 }

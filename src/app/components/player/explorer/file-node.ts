@@ -1,11 +1,11 @@
 import {ITreeNode} from "./tree/tree-node/tree-node";
-import {DriveFile} from "../../services/drive/drive-file";
+import {DriveFile} from "../../../services/drive/drive-file";
 
-export class DriveFileNode implements ITreeNode {
+export class FileNode implements ITreeNode {
     name: string;
     hasChildren: boolean;
     type: string;
-    children: DriveFileNode[];
+    children: FileNode[];
     file: DriveFile;
     
     constructor(driveFile: DriveFile) {
