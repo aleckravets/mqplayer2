@@ -1,5 +1,5 @@
 import {ITreeNode} from "./tree/tree-node/tree-node";
-import {DriveFile} from "../../../services/drive/drive-file";
+import {DriveFile} from "../../services/drive/drive-file";
 
 export class FileNode implements ITreeNode {
     name: string;

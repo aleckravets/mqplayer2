@@ -1,0 +1,10 @@
+<div *ngIf="!loading">
+    <h1>{{ folder.name}}</h1>
+    <file #file
+          *ngFor="let driveFile of folder.children"
+          [file]="driveFile"
+          (dblclick)="navigateToFolder(file)"
+          (mousedown)="selectFile(file)"></file>
+</div>
+
+<div *ngIf="loading">Loading...</div>

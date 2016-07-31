@@ -1,6 +1,6 @@
 import {RouterConfig} from '@angular/router';
-import {FolderComponent} from "./explorer/folder/folder.component";
-import {SearchResultsComponent} from "./explorer/search-results/search-results.component";
+import {FolderComponent} from "./folder/folder.component";
+import {SearchResultsComponent} from "./search-results/search-results.component";
 import {PlayerComponent} from "./player.component";
 import {AuthGuard} from "../../services/auth-guard";
 

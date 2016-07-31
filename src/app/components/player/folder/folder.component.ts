@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {FileComponent} from "../file/file.component";
 import {ActivatedRoute, Router} from "@angular/router";
-import {DriveFile} from "../../../../services/drive/drive-file";
-import {DriveService} from "../../../../services/drive/drive-service";
+import {DriveFile} from "../../../services/drive/drive-file";
+import {DriveService} from "../../../services/drive/drive-service";
 
 @Component({
     moduleId: module.id,
@@ -11,6 +11,8 @@ import {DriveService} from "../../../../services/drive/drive-service";
 })
 export class FolderComponent implements OnInit {
     folder: DriveFile;
+    selectedFiles: FileComponent[];
+    selectedFile: FileComponent;
     loading: boolean;
     private paramsObserver;
     
@@ -30,9 +32,17 @@ export class FolderComponent implements OnInit {
         this.paramsObserver.unsubscribe();
     }
 
-    dblClick(file: DriveFile) {
-        if (file.isFolder) {
-            this.router.navigate(['/folders', file.id]);
+    selectFile(file: FileComponent) {
+        if (this.selectedFile) {
+            this.selectedFile.isSelected = false;
+        }
+        file.isSelected = true;
+        this.selectedFile = file;
+    }
+
+    navigateToFolder(file: FileComponent) {
+        if (file.file.isFolder) {
+            this.router.navigate(['/folders', file.file.id]);
         }
     }
 

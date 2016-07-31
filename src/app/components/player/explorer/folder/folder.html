@@ -1,6 +1,0 @@
-<div *ngIf="!loading">
-    <h1>{{ folder.name}}</h1>
-    <content-file *ngFor="let file of folder.children" [file]="file" (dblclick)="dblClick(file)"></content-file>
-</div>
-
-<div *ngIf="loading">Loading...</div>
