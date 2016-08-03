@@ -9,48 +9,89 @@ export class DriveService {
     isLoggedIn: boolean;
     token: string;
     user: any;
+    files = {};
+    filePromises = {};
+    childrenPromises = {};
 
     constructor() {
     }
 
     getFile(id: string): Promise<DriveFile> {
-        var deferred = new Deferred();
-
-        var request = gapi.client.drive.files.get({
-            'fileId': id
-        });
-
-        request.execute(resp => {
-            if (resp.error) {
-                var error = resp.error.code + " " + resp.error.message;
-                deferred.reject(error);
-                console.log(error);
+        if (!this.filePromises[id]) {
+            if (this.files[id]) {
+                this.filePromises[id] = Promise.resolve(this.files[id]);
             }
             else {
-                this.processFile(resp)
-                this.checkSubfolders([resp])
-                    .then(() => {
-                        deferred.resolve(resp);
-                    });
-            }
-        });
+                var deferred = new Deferred();
 
-        return deferred.promise;
+                var request = gapi.client.drive.files.get({
+                    fileId: id,
+                    fields: 'id, name, mimeType, parents'
+                });
+
+                request.execute(resp => {
+                    if (resp.error) {
+                        var error = resp.error.code + " " + resp.error.message;
+                        deferred.reject(error);
+                        console.log(error);
+                    }
+                    else {
+                        this.processFile(resp)
+                        this.checkSubfolders([resp])
+                            .then(() => {
+                                this.files[id] = resp;
+                                deferred.resolve(resp);
+                            });
+                    }
+                });
+
+                this.filePromises[id] = deferred.promise;
+            }
+        }
+
+        return this.filePromises[id];
     }
 
     getChildren(parent: DriveFile): Promise<DriveFile[]> {
-        var query = `'${parent.id}' in parents`;
+        if (!this.childrenPromises[parent.id]) {
+            var query = `'${parent.id}' in parents`;
 
-        if (!parent) {
-            query = `(sharedWithMe or ${query})`;
+            if (!parent) {
+                query = `(sharedWithMe or ${query})`;
+            }
+
+            this.childrenPromises[parent.id] = this.query(query)
+                .then(files => this.processFiles(files))
+                .then(files => parent.children = files);
         }
 
-        return this.query(query)
-            .then(files => this.processFiles(files))
-            .then(files => parent.children = files);
+        return this.childrenPromises[parent.id];
+    }
+
+    getParents(file: DriveFile) {
+        let parents = [];
+        
+        let getParent = f => {
+            if (f.parents && f.parents[0]) {
+                return this.getFile(f.parents[0])
+                    .then(p => {
+                        parents.unshift(p);
+                        return getParent(p);
+                    });
+            }
+            else {
+                return Promise.resolve(parents);
+            }
+        };
+        
+        return getParent(file);
     }
 
     private processFiles(files) {
+        files.forEach(file => {
+            this.files[file.id] = file;
+            this.filePromises[file.id] = undefined;
+        });
         return this.checkSubfolders(files)
             .then(files => {
                 files.forEach(this.processFile);

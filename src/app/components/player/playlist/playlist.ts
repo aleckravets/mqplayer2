@@ -1,16 +1,16 @@
-import {Record} from "./record";
+import {DriveFile} from "../../../services/drive/drive-file";
 
 export class Playlist {
-    records: Record[];
-    shuffledRecords: Record[];
+    records: DriveFile[];
+    shuffledRecords: DriveFile[];
     repeat: boolean = false;
     shuffle: boolean = false;
 
-    constructor(records?:Record[]) {
+    constructor(records?:DriveFile[]) {
         this.records = records || [];
     }
 
-    enqueue(records: Record[], insertBeforeRecord?: Record) {
+    enqueue(records: DriveFile[], insertBeforeRecord?: DriveFile) {
         let index = insertBeforeRecord ? this.records.indexOf(insertBeforeRecord) : this.records.length;
 
         this.records.splice(index, 0, ...records);
@@ -23,7 +23,7 @@ export class Playlist {
         this.shuffleRecords();
     }
 
-    set(records: Record[]) {
+    set(records: DriveFile[]) {
         this.clear();
         this.enqueue(records);
     }
@@ -32,7 +32,7 @@ export class Playlist {
         return this.shuffle ? this.shuffledRecords : this.records;
     }
 
-    toggleShuffle(firstRecord?: Record) {
+    toggleShuffle(firstRecord?: DriveFile) {
         this.shuffle = !this.shuffle;
         if (firstRecord) {
             this.rotateShuffledRecords(firstRecord);
@@ -43,7 +43,7 @@ export class Playlist {
         this.repeat = !this.repeat;
     }
 
-    getPreviousRecord(record: Record, random?: boolean, repeat?: boolean): Record {
+    getPreviousRecord(record: DriveFile, random?: boolean, repeat?: boolean): DriveFile {
         var records =  (random === undefined ? this.shuffle : random) ? this.shuffledRecords : this.records;
         var i = records.indexOf(record);
 
@@ -55,7 +55,7 @@ export class Playlist {
         }
    }
 
-    getNextRecord(record: Record, random?: boolean, repeat?: boolean): Record {
+    getNextRecord(record: DriveFile, random?: boolean, repeat?: boolean): DriveFile {
         var records =  (random === undefined ? this.shuffle : random) ? this.shuffledRecords : this.records;
         var i = records.indexOf(record);
 
@@ -68,7 +68,7 @@ export class Playlist {
         }
     }
 
-    moveRecords(records: Record[], insertBefore?: Record) {
+    moveRecords(records: DriveFile[], insertBefore?: DriveFile) {
         if (insertBefore && records.indexOf(insertBefore) !== -1) {
             return;
         }
@@ -85,7 +85,7 @@ export class Playlist {
         this.shuffledRecords = this.records.clone().shuffle();
     }
 
-    private rotateShuffledRecords(firstRecord: Record) {
+    private rotateShuffledRecords(firstRecord: DriveFile) {
         let sh = this.shuffledRecords;
         sh.rotate(sh.indexOf(firstRecord));
     }

@@ -1,4 +1,4 @@
-import {Component, OnInit, Inject, forwardRef} from "@angular/core";
+import {Component, OnInit, Inject, forwardRef, ViewChild} from "@angular/core";
 import {DriveService} from "../../services/drive/drive-service";
 import {ControlsComponent} from "./controls/controls.component";
 import {PlaylistComponent} from "./playlist/playlist.component";
@@ -6,19 +6,21 @@ import {Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {TreeNodeComponent} from "./tree/tree-node/tree-node.component";
 import {FileNode} from "./file-node";
 import {SearchResultsComponent} from "./search-results/search-results.component";
-import {FolderComponent} from "./folder/folder.component";
 import {TreeComponent} from "./tree/tree.component";
 import {AppComponent} from "../app.component";
 import {ITreeNode} from "./tree/tree-node/tree-node";
+import {DriveFile} from "../../services/drive/drive-file";
 
 @Component({
     selector: "player",
     moduleId: module.id,
     templateUrl: "./player.html",
-    directives: [TreeComponent, FolderComponent, SearchResultsComponent, ControlsComponent, PlaylistComponent, ROUTER_DIRECTIVES]
+    directives: [TreeComponent, SearchResultsComponent, ControlsComponent, PlaylistComponent, ROUTER_DIRECTIVES]
 })
 export class PlayerComponent implements OnInit {
     treeRoots: ITreeNode[];
+    @ViewChild(PlaylistComponent) playlist: PlaylistComponent;
+    @ViewChild(ControlsComponent) controls: ControlsComponent;
 
     constructor(@Inject(forwardRef(() => AppComponent)) public app: AppComponent,
                 private driveService: DriveService,
@@ -37,6 +39,10 @@ export class PlayerComponent implements OnInit {
         return {
             getChildren: node => this.getChildren(node)
         }
+    }
+
+    playFile(file: DriveFile) {
+        this.playlist.playlist.set([file]);
     }
 
     private getChildren(node: FileNode) {
