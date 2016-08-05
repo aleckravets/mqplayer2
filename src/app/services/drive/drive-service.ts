@@ -7,7 +7,7 @@ export class DriveService {
     CLIENT_ID = '97071318931-0pqadkdeov03b36bhthnri1n3h64eg7d.apps.googleusercontent.com';
     SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
     isLoggedIn: boolean;
-    token: string;
+    token: any;
     user: any;
     files = {};
     filePromises = {};
@@ -138,6 +138,7 @@ export class DriveService {
     }
 
     login(immediate = false) {
+        console.log('Logging in...');
         return new Promise((resolve, reject) => {
             gapi.auth.authorize({
                 client_id: this.CLIENT_ID,
@@ -147,11 +148,14 @@ export class DriveService {
                 resp => {
                     if (resp && !resp.error) {
                         this.isLoggedIn = true;
-                        this.token = gapi.auth.getToken().access_token;
+                        this.token = gapi.auth.getToken();
+                        console.log('Successfuly logged in');
+                        setTimeout(() => this.login(true), this.token.expires_in * 1000);
                         resolve();
                     }
                     else {
                         this.isLoggedIn = false;
+                        console.log('Failed to log in: ' + resp.error);
                         reject(resp && resp.error);
                     }
                 });
@@ -214,17 +218,17 @@ export class DriveService {
                 }
             }
             else {
-                if (resp.error.code == 401) {
+                if (0 && resp.error.code == 401) {
                     // trying to refresh token and execute the same request again
-                    console.log(new Date(), 'Refreshing the token...');
-                    this.refreshToken()
-                        .then(() => {
-                            this.getPageOfFiles(query, result, deferred, pageToken)
-                        })
-                        .catch(() => {
-                            var error = resp.error.code + " " + resp.error.message;
-                            deferred.reject('Failed to refresh token:' + error);
-                        });
+                    // console.log(new Date(), 'Refreshing the token...');
+                    // this.login(true)
+                    //     .then(() => {
+                    //         this.getPageOfFiles(query, result, deferred, pageToken)
+                    //     })
+                    //     .catch(() => {
+                    //         var error = resp.error.code + " " + resp.error.message;
+                    //         deferred.reject('Failed to refresh token:' + error);
+                    //     });
                 }
                 else {
                     var error = resp.error.code + " " + resp.error.message;
