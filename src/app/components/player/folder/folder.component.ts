@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, forwardRef, Inject} from "@angular/core";
 import {FileComponent} from "../file/file.component";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, ROUTER_DIRECTIVES} from "@angular/router";
 import {DriveFile} from "../../../services/drive/drive-file";
 import {DriveService} from "../../../services/drive/drive-service";
 import {PlayerComponent} from "../player.component";
@@ -8,7 +8,7 @@ import {PlayerComponent} from "../player.component";
 @Component({
     moduleId: module.id,
     templateUrl: "folder.html",
-    directives: [FileComponent]
+    directives: [FileComponent, ROUTER_DIRECTIVES]
 })
 export class FolderComponent implements OnInit {
     folder: DriveFile;

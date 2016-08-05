@@ -1,7 +1,7 @@
 <div *ngIf="!isLoading">
     <h3>
         <span *ngFor="let p of parents">
-            {{ p.name}}
+            <a [routerLink]="['/folders', p.id]">{{ p.name }}</a>
             <svg x="0px" y="0px" width="20px" height="20px" viewBox="0 0 24 24" focusable="false" fill="#000000">
                 <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path>
             </svg>
@@ -12,7 +12,8 @@
           *ngFor="let driveFile of folder.children"
           [file]="driveFile"
           (dblclick)="doubleClick(file)"
-          (mousedown)="selectFile(file)"></file>
+          (mousedown)="selectFile(file)">
+    </file>
 </div>
 
 <div *ngIf="isLoading">Loading...</div>
